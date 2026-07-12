@@ -1,213 +1,121 @@
 <div align="center">
 
-# 🎓 Student Management System
+<img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=35&duration=3500&pause=1000&color=2563EB&center=true&vCenter=true&width=900&lines=🎓+Student+Management+System;Modern+Full+Stack+Web+Application;Built+with+Node.js+%7C+Express.js+%7C+MySQL;Professional+%26+Scalable+Architecture" />
 
-### A Modern, Secure & Scalable Student Management Platform
+<br>
 
-[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Express.js](https://img.shields.io/badge/Express.js-Backend-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
-[![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)]()
+<img src="https://img.shields.io/badge/Version-1.0-blue?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/Maintained-Yes-orange?style=for-the-badge"/>
+
+<br><br>
+
+<img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white"/>
+<img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express"/>
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql"/>
+<img src="https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap"/>
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>
 
 ---
 
-### 📚 Manage Students • Teachers • Attendance • Marks • Fees • Reports
+# 🎓 Student Management System
+
+### 🚀 A Modern, Secure & Professional Student Management Platform
+
+Manage students, teachers, attendance, marks, fees and reports with a modern dashboard and scalable architecture.
+
+⭐ If you like this project, please consider giving it a star.
 
 </div>
 
 ---
 
-# 📖 Overview
+# ✨ Features
 
-The **Student Management System** is a full-stack web application designed to simplify educational institution management.
-
-It provides administrators with a centralized dashboard to efficiently manage students, teachers, attendance, marks, fee records, reports, and academic information through a secure and user-friendly interface.
-
----
-
-# ✨ Key Features
-
-### 👨‍🎓 Student Management
-- Student Registration
-- Student Profiles
-- Update Student Details
-- Delete Student Records
-- Search Students
-
-### 👨‍🏫 Teacher Management
-- Teacher Registration
-- Teacher Profiles
-- Department Management
-- Teacher Information
-
-### 📅 Attendance System
-- Daily Attendance
-- Attendance Reports
-- Monthly Attendance
-- Student Attendance History
-
-### 📝 Marks Management
-- Internal Marks
-- Semester Marks
-- Result Generation
-- Grade Calculation
-
-### 💰 Fee Management
-- Fee Collection
-- Payment History
-- Due Fee Tracking
-- Receipt Generation
-
-### 📊 Dashboard
-- Student Statistics
-- Teacher Statistics
-- Attendance Analytics
-- Reports
-- Quick Actions
-
-### 🔒 Security
-- Login Authentication
-- Password Protection
-- Session Management
-- Input Validation
+- 🎓 Student Management
+- 👨‍🏫 Teacher Management
+- 📅 Attendance System
+- 📝 Marks Management
+- 💰 Fee Management
+- 📊 Dashboard Analytics
+- 🔐 Authentication
+- 📂 Reports
+- 📱 Responsive UI
+- ⚡ Fast Performance
 
 ---
 
-# 🚀 Tech Stack
-
-| Technology | Purpose |
-|------------|----------|
-| Node.js | Backend Runtime |
-| Express.js | Web Framework |
-| MySQL | Database |
-| HTML5 | Frontend |
-| CSS3 | Styling |
-| JavaScript | Client Logic |
-| Bootstrap 5 | Responsive UI |
-
----
-
-# 📂 Project Structure
+# 🏗️ System Architecture
 
 ```text
-Student-Management-System
-│
-├── config/
-├── controllers/
-├── middleware/
-├── models/
-├── public/
-│   ├── css/
-│   ├── js/
-│   └── images/
-│
-├── routes/
-├── views/
-├── database/
-├── uploads/
-├── server.js
-├── package.json
-├── package-lock.json
-└── README.md
+             Client Browser
+                    │
+                    ▼
+         HTML • CSS • Bootstrap
+                    │
+                    ▼
+             Express.js Server
+                    │
+                    ▼
+           Business Logic Layer
+                    │
+                    ▼
+              MySQL Database
 ```
 
 ---
 
+# 💻 Technology Stack
 
-# 📊 Modules
-
-- Authentication
-- Dashboard
-- Student Management
-- Teacher Mana# ⚙️ Installation
-
-
----
-gement
-- Attendance
-- Marks
-- Fee Management
-- Reports
-- Profile Management
-- Search System
-- Settings
+| Backend | Frontend | Database | UI |
+|---------|----------|----------|----|
+| Node.js | HTML5 | MySQL | Bootstrap |
+| Express.js | CSS3 | | JavaScript |
 
 ---
 
-# 🔐 Security Features
+# 📦 Project Modules
 
-- Password Hashing
-- Session Authentication
-- Protected Routes
-- SQL Injection Protection
-- Input Validation
-- Error Handling
-
----
-
-# 📈 Future Roadmap
-
-- ✅ Email Notifications
-- ✅ SMS Alerts
-- ✅ Parent Portal
-- ✅ Student Portal
-- ✅ Teacher Portal
-- ✅ Timetable Management
-- ✅ Online Fee Payment
-- ✅ Certificate Generation
-- ✅ REST API
-- ✅ Mobile App
+| Module | Status |
+|----------|:------:|
+| Authentication | ✅ |
+| Dashboard | ✅ |
+| Student Management | ✅ |
+| Teacher Management | ✅ |
+| Attendance | ✅ |
+| Marks | ✅ |
+| Fees | ✅ |
+| Reports | ✅ |
+| Search | ✅ |
+| Settings | ✅ |
 
 ---
 
-# 💻 Screens
-
-- Login
-- Dashboard
-- Students
-- Teachers
-- Attendance
-- Marks
-- Reports
-- Fee Management
-
----
-
-# 📌 Requirements
-
-- Node.js 18+
-- MySQL 8+
-- npm
-
----
-
-# 🤝 Contributing
-
-Contributions are welcome.
-
-1. Fork the repository
-
-2. Create a feature branch
+# ▶️ Run Project
 
 ```bash
-git checkout -b feature/NewFeature
+npm install
+npm start
 ```
 
-3. Commit changes
+Server
 
-```bash
-git commit -m "Add New Feature"
+```
+http://localhost:3000
 ```
 
-4. Push
+---
 
-```bash
-git push origin feature/NewFeature
-```
+# 📸 Preview
 
-5. Open a Pull Request
+> Dashboard screenshots will be added here.
+
+---
+
+# 📈 Development Status
+
+🟢 Active Development
 
 ---
 
@@ -221,22 +129,10 @@ https://github.com/iamnavanith
 
 ---
 
-# ⭐ Support
-
-If you found this project useful, please consider giving it a ⭐ on GitHub.
-
----
-
-# 📄 License
-
-This project is licensed under the **MIT License**.
-
----
-
 <div align="center">
 
-## 🚀 Built with ❤️ using Node.js, Express.js & MySQL
+### ⭐ Star this Repository ⭐
 
-### ⭐ Don't forget to Star this Repository ⭐
+Made with ❤️ using Node.js • Express.js • MySQL
 
 </div>
