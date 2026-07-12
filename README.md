@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎓 Student Management System . Smart
+# 🎓 Student Management System . Smart 
 
 <img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=34&duration=3500&pause=1200&color=0EA5E9&center=true&vCenter=true&width=900&lines=Modern+Student+Management+Platform;Secure+%7C+Scalable+%7C+Responsive;Built+with+Node.js+%2B+Express.js+%2B+MySQL;Professional+Full+Stack+Application" alt="Typing Animation"/>
 
