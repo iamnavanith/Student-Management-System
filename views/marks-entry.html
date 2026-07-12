@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Marks Entry | Smart Student Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --primary-color: #4f46e5; --bg-light: #f8f9fa; }
+        body { background-color: var(--bg-light); font-family: 'Segoe UI', system-ui, sans-serif; overflow-x: hidden; }
+        .navbar-brand { font-weight: 700; color: var(--primary-color) !important; }
+        .sidebar { min-height: calc(100vh - 56px); background-color: #ffffff; border-right: 1px solid #edf2f7; position: relative; z-index: 10; }
+        .nav-link { color: #4a5568; font-weight: 500; padding: 12px 20px; border-radius: 8px; margin: 4px 12px; transition: all 0.2s; }
+        .nav-link:hover { background-color: #f1f5f9; color: var(--primary-color); }
+        .nav-link.active { background-color: var(--primary-color); color: #ffffff !important; }
+        .workspace-card { border: none; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.02); background-color: #ffffff; border: 1px solid #edf2f7; }
+        .marks-input { width: 90px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; padding: 6px; }
+        .marks-input:focus { border-color: var(--primary-color); outline: none; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top shadow-sm" style="z-index: 1030;">
+    <div class="container-fluid">
+        <a class="navbar-brand px-3" href="/dashboard">Smart Student Management System</a>
+        <div class="ms-auto pe-3"><span class="text-secondary small me-3">Role: <strong>Admin</strong></span><a href="/login" class="btn btn-sm btn-outline-danger fw-semibold px-3">Logout</a></div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0 pt-3">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                    <li><a class="nav-link" href="/add-student">Add Student</a></li>
+                    <li><a class="nav-link" href="/view-students">View Students</a></li>
+                    <li><a class="nav-link" href="/attendance">Attendance</a></li>
+                    <li><a class="nav-link active" href="/marks-entry">Marks Entry</a></li>
+                    <li><a class="nav-link" href="/reports">Reports</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-4">
+            <div class="pt-3 pb-2 mb-4 border-bottom">
+                <h1 class="h2 fw-bold text-dark m-0">Student Marks Entry</h1>
+                <p class="text-muted small">Record and map raw test score indexes directly to student directory paths.</p>
+            </div>
+
+            <div id="statusAlert" class="alert d-none shadow-sm fw-medium mb-4" role="alert"></div>
+
+            <div class="card workspace-card p-4 mb-4">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Academic Course</label>
+                        <select id="courseSelect" class="form-select">
+                            <option value="" disabled selected>Select Course...</option>
+                            <option value="BCA">Bachelor of Computer Applications (BCA)</option>
+                            <option value="BSc">Bachelor of Science (BSc)</option>
+                            <option value="BCom">Bachelor of Commerce (BCom)</option>
+                            <option value="BBA">Bachelor of Business Administration (BBA)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Exam Term Category</label>
+                        <select id="examSelect" class="form-select">
+                            <option value="" disabled selected>Select Evaluation Term...</option>
+                            <option value="Unit Test">Unit Test</option>
+                            <option value="Mid-Term">Mid-Term</option>
+                            <option value="Final Exam">Final Exam</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary fw-semibold w-100 py-2" style="background-color: var(--primary-color); border:none; height:42px;" onclick="loadMarksRoster()">Fetch Class Ledger</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card workspace-card p-4 d-none" id="ledgerCard">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle m-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="py-3 ps-3">Roll ID</th>
+                                <th class="py-3">Full Student Name</th>
+                                <th class="py-3 text-center">Subject 1 (Max 100)</th>
+                                <th class="py-3 text-center">Subject 2 (Max 100)</th>
+                                <th class="py-3 text-center">Subject 3 (Max 100)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledgerTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+                    <button class="btn btn-success fw-semibold px-5 py-2.5" onclick="submitMarksLedger()">Commit Marks Scores</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    async function loadMarksRoster() {
+        const course = document.getElementById('courseSelect').value;
+        const exam = document.getElementById('examSelect').value;
+        if (!course || !exam) { alert("Please complete both parameters filters."); return; }
+
+        const tbody = document.getElementById('ledgerTableBody');
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-muted">Building score evaluation matrices rows...</td></tr>`;
+        document.getElementById('ledgerCard').classList.remove('d-none');
+
+        try {
+            const response = await fetch('/api/students');
+            const result = await response.json();
+
+            if (result.success && result.data.length > 0) {
+                const filteredStudents = result.data.filter(student => student.course === course);
+
+                if (filteredStudents.length > 0) {
+                    tbody.innerHTML = "";
+                    filteredStudents.forEach(student => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td class="py-3 ps-3 fw-bold font-monospace text-secondary">${student.roll_no}</td>
+                                <td class="fw-semibold text-dark">${student.name}</td>
+                                <td class="text-center"><input type="number" class="marks-input" id="s1_${student.id}" min="0" max="100" value="0"></td>
+                                <td class="text-center"><input type="number" class="marks-input" id="s2_${student.id}" min="0" max="100" value="0"></td>
+                                <td class="text-center"><input type="number" class="marks-input" id="s3_${student.id}" min="0" max="100" value="0"></td>
+                            </tr>`;
+                    });
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-warning fw-medium">No active student profiles logged inside the ${course} department cluster.</td></tr>`;
+                }
+            } else {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-warning fw-medium">No student profiles found.</td></tr>`;
+            }
+        } catch (error) {
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-danger">Failed to track class data.</td></tr>`;
+        }
+    }
+
+    async function submitMarksLedger() {
+        const exam_type = document.getElementById('examSelect').value;
+        const rows = document.getElementById('ledgerTableBody').getElementsByTagName('tr');
+        const alertBox = document.getElementById('statusAlert');
+        if (rows.length === 0 || rows[0].innerText.includes("No active student")) return;
+
+        const marks_records = [];
+
+        for (let row of rows) {
+            const inputS1 = row.querySelector('input[id^="s1_"]');
+            if (!inputS1) continue;
+
+            const studentId = inputS1.id.split('_')[1];
+            const s1 = document.getElementById(`s1_${studentId}`).value || 0;
+            const s2 = document.getElementById(`s2_${studentId}`).value || 0;
+            const s3 = document.getElementById(`s3_${studentId}`).value || 0;
+
+            marks_records.push({
+                student_id: parseInt(studentId),
+                s1: parseInt(s1),
+                s2: parseInt(s2),
+                s3: parseInt(s3)
+            });
+        }
+
+        try {
+            const response = await fetch('/api/marks/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ exam_type, marks_records })
+            });
+            const result = await response.json();
+
+            alertBox.className = `alert ${result.success ? 'alert-success' : 'alert-danger'} d-block`;
+            alertBox.innerText = result.message;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => alertBox.className = "alert d-none", 3500);
+        } catch (err) {
+            alertBox.className = "alert alert-danger d-block";
+            alertBox.innerText = "Error delivering evaluation dataset arrays payload.";
+        }
+    }
+</script>
+</body>
+</html>

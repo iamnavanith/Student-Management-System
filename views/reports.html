@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Performance Analytics | Smart Student Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --primary-color: #4f46e5; --bg-light: #f8f9fa; }
+        body { background-color: var(--bg-light); font-family: 'Segoe UI', system-ui, sans-serif; overflow-x: hidden; }
+        .navbar-brand { font-weight: 700; color: var(--primary-color) !important; }
+        .sidebar { min-height: calc(100vh - 56px); background-color: #ffffff; border-right: 1px solid #edf2f7; position: relative; z-index: 10; }
+        .nav-link { color: #4a5568; font-weight: 500; padding: 12px 20px; border-radius: 8px; margin: 4px 12px; transition: all 0.2s; }
+        .nav-link:hover { background-color: #f1f5f9; color: var(--primary-color); }
+        .nav-link.active { background-color: var(--primary-color); color: #ffffff !important; box-shadow: 0 4px 12px rgba(79,70,229,0.2); }
+        .workspace-card { border: none; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.02); background-color: #ffffff; border: 1px solid #edf2f7; }
+        .badge-good { background-color: rgba(16, 185, 129, 0.1) !important; color: #10b981 !important; font-weight: 600; padding: 6px 12px; border-radius: 6px; }
+        .badge-warn { background-color: rgba(239, 68, 68, 0.1) !important; color: #ef4444 !important; font-weight: 600; padding: 6px 12px; border-radius: 6px; }
+        .font-mono { font-family: monospace; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top shadow-sm" style="z-index: 1030;">
+    <div class="container-fluid">
+        <a class="navbar-brand px-3" href="/dashboard">Smart Student Management System</a>
+        <div class="ms-auto pe-3"><span class="text-secondary small me-3">Role: <strong>Admin</strong></span><a href="/login" class="btn btn-sm btn-outline-danger fw-semibold px-3">Logout</a></div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0 pt-3">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                    <li><a class="nav-link" href="/add-student">Add Student</a></li>
+                    <li><a class="nav-link" href="/view-students">View Students</a></li>
+                    <li><a class="nav-link" href="/attendance">Attendance</a></li>
+                    <li><a class="nav-link" href="/marks-entry">Marks Entry</a></li>
+                    <li><a class="nav-link active" href="/reports">Reports</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-4">
+            <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-4 border-bottom">
+                <div>
+                    <h1 class="h2 fw-bold text-dark m-0">Performance Report Cards</h1>
+                    <p class="text-muted small">Generate real-time combined metrics tracking attendance averages alongside total academic marks maps.</p>
+                </div>
+            </div>
+
+            <div class="card workspace-card p-4 mb-4">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-8">
+                        <label class="form-label fw-semibold">Target Academic Course Pathway</label>
+                        <select id="courseSelect" class="form-select" style="height: 42px;">
+                            <option value="" disabled selected>Select Course Path...</option>
+                            <option value="BCA">Bachelor of Computer Applications (BCA)</option>
+                            <option value="BSc">Bachelor of Science (BSc)</option>
+                            <option value="BCom">Bachelor of Commerce (BCom)</option>
+                            <option value="BBA">Bachelor of Business Administration (BBA)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary fw-semibold w-100 py-2" style="background-color: var(--primary-color); border:none; height: 42px;" onclick="generateSummaryMatrix()">Compile Analytics Report</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card workspace-card p-4 d-none" id="reportCardWrapper">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle m-0">
+                        <thead class="table-light border-0">
+                            <tr>
+                                <th class="py-3 ps-3">Roll ID</th>
+                                <th class="py-3">Student Full Name</th>
+                                <th class="py-3 text-center">Attendance Track Percentage</th>
+                                <th class="py-3 text-center">Active Evaluation Term</th>
+                                <th class="py-3 text-center">Aggregated Cumulative Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    async function generateSummaryMatrix() {
+        const course = document.getElementById('courseSelect').value;
+        if (!course) { alert("Please establish a target selection path."); return; }
+
+        const tbody = document.getElementById('reportTableBody');
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-muted">Running system data cross-join data array structures...</td></tr>`;
+        document.getElementById('reportCardWrapper').classList.remove('d-none');
+
+        try {
+            const response = await fetch(`/api/reports/summary?course=${course}`);
+            const result = await response.json();
+
+            if (result.success && result.data.length > 0) {
+                tbody.innerHTML = "";
+                
+                result.data.forEach(row => {
+                    const attPct = row.attendance_percentage !== null ? parseFloat(row.attendance_percentage) : 100.0;
+                    const attBadge = attPct >= 75 ? 'badge-good' : 'badge-warn';
+                    const examTerm = row.exam_type !== null ? row.exam_type : '<span class="text-muted small italic">No Tests Logged</span>';
+                    const scoreSum = row.total_marks !== null ? `<strong class="text-dark">${row.total_marks}</strong> <span class="text-secondary small">/ 300</span>` : '<span class="text-muted small">Pending Entry</span>';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="py-3.5 ps-3 fw-bold font-mono text-secondary">${row.roll_no}</td>
+                            <td class="fw-semibold text-dark">${row.name}</td>
+                            <td class="text-center"><span class="badge ${attBadge}">${attPct}%</span></td>
+                            <td class="text-center fw-medium text-secondary">${examTerm}</td>
+                            <td class="text-center">${scoreSum}</td>
+                        </tr>`;
+                });
+            } else {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-warning fw-medium">No relational history logged yet inside the ${course} records framework columns.</td></tr>`;
+            }
+        } catch (error) {
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-danger fw-semibold">Error querying server analytical dataset modules.</td></tr>`;
+        }
+    }
+</script>
+</body>
+</html>
