@@ -117,6 +117,9 @@ Student-Management-System
 ```bash
 npm install
 npm start
+OR 
+cd Student-Management-System-main
+npm start
 ```
 
 Server:
