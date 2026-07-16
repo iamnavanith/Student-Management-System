@@ -5,57 +5,412 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - Smart Student Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
     <style>
-        body {
-            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
-            min-height: 100vh;
+        /* ===== Login Auth Tabs ===== */
+        .auth-tabs {
+            display: flex;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 1.75rem;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            background: transparent;
+            border: none;
+            border-radius: 11px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            gap: 6px;
         }
-        .login-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        .auth-tab:hover {
+            color: #e2e8f0;
+        }
+        .auth-tab.active {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+        }
+        .auth-tab i {
+            font-size: 0.85rem;
+        }
+
+        /* ===== Auth Panels ===== */
+        .auth-panel {
+            display: none;
+            animation: panelFadeIn 0.35s ease-out;
+        }
+        .auth-panel.active {
+            display: block;
+        }
+        @keyframes panelFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== Divider ===== */
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 1.25rem 0;
+        }
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+        .auth-divider span {
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ===== Google Button ===== */
+        .btn-google {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 14px 20px;
             background: #ffffff;
+            color: #3c4043;
+            border: 1px solid #dadce0;
+            border-radius: 12px;
+            font-family: 'Plus Jakarta Sans', 'Roboto', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         }
-        .btn-primary {
-            background-color: #4f46e5;
-            border: none;
+        .btn-google:hover {
+            background: #f8f9fa;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
         }
-        .btn-primary:hover {
-            background-color: #4338ca;
+        .btn-google:active {
+            transform: translateY(0);
+        }
+        .btn-google .google-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* ===== OTP Step Flow ===== */
+        .otp-step {
+            display: none;
+            animation: panelFadeIn 0.35s ease-out;
+        }
+        .otp-step.active {
+            display: block;
+        }
+
+        .otp-input-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 1.25rem 0;
+        }
+        .otp-input-group input {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 1.35rem;
+            font-weight: 700;
+            border-radius: 12px;
+            border: 1.5px solid rgba(255,255,255,0.12);
+            background: rgba(15, 23, 42, 0.6);
+            color: #ffffff;
+            transition: all 0.2s;
+            caret-color: #6366f1;
+        }
+        .otp-input-group input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+            outline: none;
+        }
+
+        /* ===== Phone Input with Country Code ===== */
+        .phone-input-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+        .country-code {
+            width: 80px;
+            flex-shrink: 0;
+            text-align: center;
+            font-weight: 600;
+            border-radius: 12px !important;
+        }
+
+        /* ===== OTP Demo Toast ===== */
+        .otp-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            z-index: 9999;
+            display: none;
+            animation: toastSlideIn 0.4s ease-out;
+            max-width: 320px;
+        }
+        .otp-toast.show {
+            display: block;
+        }
+        .otp-toast .otp-code {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 6px;
+            display: block;
+            margin-top: 4px;
+        }
+        @keyframes toastSlideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ===== Register Link ===== */
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .register-link a {
+            color: #818cf8;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .register-link a:hover {
+            color: #a5b4fc;
+            text-decoration: underline;
+        }
+
+        /* ===== Timer ===== */
+        .otp-timer {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 8px;
+        }
+        .otp-timer span {
+            color: #f59e0b;
+            font-weight: 700;
+        }
+
+        /* ===== Change Number Link ===== */
+        .change-number-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .change-number-link a {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .change-number-link a:hover {
+            color: #e2e8f0;
+            text-decoration: underline;
+        }
+
+        /* ===== Input group icon for login card ===== */
+        .login-card .input-group-text {
+            background-color: rgba(15, 23, 42, 0.6) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            color: #64748b !important;
         }
     </style>
 </head>
-<body>
+<body class="login-body">
+
+<!-- OTP Demo Toast -->
+<div id="otpToast" class="otp-toast">
+    <i class="fa-solid fa-shield-halved me-1"></i> Demo OTP Code:
+    <span id="otpToastCode" class="otp-code"></span>
+</div>
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card login-card p-4">
+        <div class="col-md-5 col-lg-5">
+            <div class="card login-card p-4 p-md-5 fade-in">
                 <div class="card-body">
+                    <!-- Header -->
                     <div class="text-center mb-4">
-                        <h3 class="fw-bold text-dark">Admin Login</h3>
-                        <p class="text-muted">Smart Student Management System</p>
+                        <div class="mb-3 d-inline-block">
+                            <span class="p-3 bg-primary bg-opacity-10 rounded-4 d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);">
+                                <i class="fa-solid fa-graduation-cap fa-2x text-primary" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                            </span>
+                        </div>
+                        <h3 class="fw-bold mb-1">Welcome Back</h3>
+                        <p class="text-secondary small">Sign in to Smart Student Management System</p>
                     </div>
 
+                    <!-- Alert Box -->
                     <div id="alertBox" class="alert d-none" role="alert"></div>
 
-                    <form id="loginForm">
-                        <div class="mb-3">
-                            <label for="username" class="form-label fw-semibold">Username</label>
-                            <input type="text" class="form-control" id="username" placeholder="Enter admin username" required>
+                    <!-- Auth Tabs -->
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" data-tab="credentials" id="tab-credentials">
+                            <i class="fa-solid fa-user-lock"></i> Password
+                        </button>
+                        <button class="auth-tab" data-tab="google" id="tab-google">
+                            <i class="fa-brands fa-google"></i> Google
+                        </button>
+                        <button class="auth-tab" data-tab="phone" id="tab-phone">
+                            <i class="fa-solid fa-mobile-screen"></i> Phone OTP
+                        </button>
+                    </div>
+
+                    <!-- ========== TAB 1: Username & Password ========== -->
+                    <div class="auth-panel active" id="panel-credentials">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="username" class="form-label fw-semibold">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0" style="border-radius: 12px 0 0 12px;"><i class="fa-solid fa-user text-secondary"></i></span>
+                                    <input type="text" class="form-control border-start-0 ps-1" id="username" placeholder="Enter admin username" required style="border-radius: 0 12px 12px 0;">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-semibold">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0" style="border-radius: 12px 0 0 12px;"><i class="fa-solid fa-lock text-secondary"></i></span>
+                                    <input type="password" class="form-control border-start-0 ps-1" id="password" placeholder="Enter password" required style="border-radius: 0 12px 12px 0;">
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold py-3">
+                                    <i class="fa-solid fa-right-to-bracket me-2"></i>Sign In
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- ========== TAB 2: Google Sign-In ========== -->
+                    <div class="auth-panel" id="panel-google">
+                        <div class="text-center mb-3">
+                            <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: linear-gradient(135deg, rgba(66,133,244,0.1), rgba(234,67,53,0.1), rgba(251,188,4,0.1), rgba(52,168,83,0.1)); border-radius: 20px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-brands fa-google" style="font-size: 2rem; background: linear-gradient(135deg, #4285F4, #EA4335, #FBBC04, #34A853); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                            </div>
+                            <p class="text-secondary small mb-3">Continue with your Google account for instant access</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label fw-semibold">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Enter password" required>
+
+                        <button class="btn-google" id="googleSignInBtn" type="button">
+                            <svg class="google-icon" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC04" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                            Sign in with Google
+                        </button>
+
+                        <div class="auth-divider">
+                            <span>Secure Authentication</span>
                         </div>
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg fw-bold">Sign In</button>
+
+                        <div class="text-center">
+                            <small class="text-secondary" style="font-size: 0.75rem;">
+                                <i class="fa-solid fa-lock me-1"></i>
+                                Your Google account data is encrypted and secure
+                            </small>
                         </div>
-                    </form>
+                    </div>
+
+                    <!-- ========== TAB 3: Phone OTP ========== -->
+                    <div class="auth-panel" id="panel-phone">
+                        <!-- Step 1: Enter Phone -->
+                        <div class="otp-step active" id="otp-step-1">
+                            <div class="text-center mb-3">
+                                <div style="width: 60px; height: 60px; margin: 0 auto 0.75rem; background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.15)); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa-solid fa-mobile-screen-button" style="font-size: 1.5rem; color: #10b981;"></i>
+                                </div>
+                                <p class="text-secondary small">Enter your registered phone number to receive a one-time verification code</p>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phoneNumber" class="form-label fw-semibold">Phone Number</label>
+                                <div class="phone-input-wrapper">
+                                    <input type="text" class="form-control country-code" value="+91" readonly>
+                                    <div class="input-group flex-grow-1">
+                                        <span class="input-group-text bg-transparent border-end-0" style="border-radius: 12px 0 0 12px;"><i class="fa-solid fa-phone text-secondary"></i></span>
+                                        <input type="tel" class="form-control border-start-0 ps-1" id="phoneNumber" placeholder="Enter phone number" maxlength="10" style="border-radius: 0 12px 12px 0;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button type="button" class="btn btn-primary btn-lg fw-bold py-3" id="sendOtpBtn">
+                                    <i class="fa-solid fa-paper-plane me-2"></i>Send OTP
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Enter OTP -->
+                        <div class="otp-step" id="otp-step-2">
+                            <div class="text-center mb-3">
+                                <div style="width: 60px; height: 60px; margin: 0 auto 0.75rem; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(124,58,237,0.15)); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa-solid fa-shield-halved" style="font-size: 1.5rem; color: #6366f1;"></i>
+                                </div>
+                                <p class="text-secondary small">Enter the 6-digit code sent to<br><strong id="maskedPhone" class="text-light"></strong></p>
+                            </div>
+
+                            <div class="otp-input-group">
+                                <input type="text" maxlength="1" class="otp-box" data-index="0" inputmode="numeric" autocomplete="one-time-code">
+                                <input type="text" maxlength="1" class="otp-box" data-index="1" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box" data-index="2" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box" data-index="3" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box" data-index="4" inputmode="numeric">
+                                <input type="text" maxlength="1" class="otp-box" data-index="5" inputmode="numeric">
+                            </div>
+
+                            <div class="otp-timer">
+                                Code expires in <span id="otpCountdown">5:00</span>
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <button type="button" class="btn btn-primary btn-lg fw-bold py-3" id="verifyOtpBtn">
+                                    <i class="fa-solid fa-check-double me-2"></i>Verify & Sign In
+                                </button>
+                            </div>
+
+                            <div class="change-number-link">
+                                <a id="changeNumberLink"><i class="fa-solid fa-arrow-left me-1"></i>Change phone number</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Register Link -->
+                    <div class="register-link">
+                        <span class="text-secondary small">Don't have an account? </span>
+                        <a href="/register">Create Account</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,12 +418,45 @@
 </div>
 
 <script>
+    // ===== Tab Switching =====
+    const tabs = document.querySelectorAll('.auth-tab');
+    const panels = document.querySelectorAll('.auth-panel');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.tab;
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('panel-' + target).classList.add('active');
+            // Re-trigger animation
+            const panel = document.getElementById('panel-' + target);
+            panel.style.animation = 'none';
+            panel.offsetHeight; // reflow
+            panel.style.animation = '';
+            // Clear alerts
+            hideAlert();
+        });
+    });
+
+    const alertBox = document.getElementById('alertBox');
+
+    function showAlert(message, type) {
+        alertBox.className = 'alert alert-' + type;
+        alertBox.innerHTML = message;
+        alertBox.classList.remove('d-none');
+    }
+
+    function hideAlert() {
+        alertBox.classList.add('d-none');
+    }
+
+    // ===== TAB 1: Username & Password Login =====
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
 
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        const alertBox = document.getElementById('alertBox');
 
         try {
             const response = await fetch('/login', {
@@ -80,25 +468,206 @@
             const data = await response.json();
 
             if (data.success) {
-                alertBox.className = "alert alert-success";
-                alertBox.innerText = data.message;
-                alertBox.classList.remove('d-none');
-                
-                // Redirect to the dashboard after 1 second
-                setTimeout(() => {
-                    window.location.href = '/dashboard';
-                }, 1000);
+                showAlert('<i class="fa-solid fa-circle-check me-2"></i>' + data.message, 'success');
+                setTimeout(() => { window.location.href = '/dashboard'; }, 1000);
             } else {
-                alertBox.className = "alert alert-danger";
-                alertBox.innerText = data.message;
-                alertBox.classList.remove('d-none');
+                showAlert('<i class="fa-solid fa-circle-exclamation me-2"></i>' + data.message, 'danger');
             }
         } catch (error) {
-            alertBox.className = "alert alert-danger";
-            alertBox.innerText = "Something went wrong.";
-            alertBox.classList.remove('d-none');
+            showAlert('<i class="fa-solid fa-circle-exclamation me-2"></i>Connection error. Please try again.', 'danger');
         }
     });
+
+    // ===== TAB 2: Google Sign-In (Simulated Demo) =====
+    document.getElementById('googleSignInBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('googleSignInBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Connecting to Google...';
+
+        // Simulate Google OAuth delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        try {
+            const response = await fetch('/login/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: 'admin@school.edu',
+                    name: 'Administrator',
+                    googleId: 'google_demo_' + Date.now()
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showAlert('<i class="fa-solid fa-circle-check me-2"></i>' + data.message, 'success');
+                setTimeout(() => { window.location.href = '/dashboard'; }, 1000);
+            } else {
+                showAlert('<i class="fa-solid fa-circle-exclamation me-2"></i>' + data.message, 'danger');
+                btn.disabled = false;
+                btn.innerHTML = '<svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC04" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in with Google';
+            }
+        } catch (error) {
+            showAlert('<i class="fa-solid fa-circle-exclamation me-2"></i>Google sign-in failed. Please try again.', 'danger');
+            btn.disabled = false;
+            btn.innerHTML = '<svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC04" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in with Google';
+        }
+    });
+
+    // ===== TAB 3: Phone OTP =====
+    let otpTimerInterval = null;
+    let currentPhone = '';
+
+    // Send OTP
+    document.getElementById('sendOtpBtn').addEventListener('click', async () => {
+        const phone = document.getElementById('phoneNumber').value.trim();
+        if (!phone || phone.length < 10) {
+            showAlert('<i class="fa-solid fa-circle-exclamation me-2"></i>Please enter a valid 10-digit phone number.', 'danger');
+            return;
+        }
+
+        currentPhone = phone;
+        const btn = document.getElementById('sendOtpBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Sending OTP...';
+
+        try {
+            const response = await fetch('/login/phone-send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Show demo OTP toast
+                if (data.demo_otp) {
+                    const toast = document.getElementById('otpToast');
+                    document.getElementById('otpToastCode').textContent = data.demo_otp;
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 8000);
+                }
+
+                // Switch to OTP entry step
+                document.getElementById('otp-step-1').classList.remove('active');
+                document.getElementById('otp-step-2').classList.add('active');
+                document.getElementById('maskedPhone').textContent = '+91 ' + phone.slice(0, 2) + '****' + phone.slice(-2);
+
+                // Focus first OTP box
+                document.querySelector('.otp-box[data-index="0"]').focus();
+
+                // Start countdown timer
+                startOtpTimer(300); // 5 minutes
+
+                showAlert('<i class="fa-solid fa-circle-check me-2"></i>' + data.message, 'success');
+            } else {
+                showAlert('<i class="fa-solid fa-circle-exclamation me-2"></i>' + data.message, 'danger');
+            }
+        } catch (error) {
+            showAlert('<i class="fa-solid fa-circle-exclamation me-2"></i>Failed to send OTP. Please try again.', 'danger');
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i>Send OTP';
+    });
+
+    // OTP Box auto-advance
+    document.querySelectorAll('.otp-box').forEach((box, idx, boxes) => {
+        box.addEventListener('input', (e) => {
+            const value = e.target.value;
+            if (value.length === 1 && idx < boxes.length - 1) {
+                boxes[idx + 1].focus();
+            }
+        });
+        box.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+                boxes[idx - 1].focus();
+            }
+        });
+        // Allow paste
+        box.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pasted = (e.clipboardData || window.clipboardData).getData('text').trim();
+            if (/^\d{6}$/.test(pasted)) {
+                boxes.forEach((b, i) => { b.value = pasted[i]; });
+                boxes[5].focus();
+            }
+        });
+    });
+
+    // Verify OTP
+    document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
+        const boxes = document.querySelectorAll('.otp-box');
+        let otp = '';
+        boxes.forEach(b => { otp += b.value; });
+
+        if (otp.length !== 6) {
+            showAlert('<i class="fa-solid fa-circle-exclamation me-2"></i>Please enter the complete 6-digit OTP.', 'danger');
+            return;
+        }
+
+        const btn = document.getElementById('verifyOtpBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Verifying...';
+
+        try {
+            const response = await fetch('/login/phone-verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: currentPhone, otp })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                clearInterval(otpTimerInterval);
+                showAlert('<i class="fa-solid fa-circle-check me-2"></i>' + data.message, 'success');
+                setTimeout(() => { window.location.href = '/dashboard'; }, 1000);
+            } else {
+                showAlert('<i class="fa-solid fa-circle-exclamation me-2"></i>' + data.message, 'danger');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check-double me-2"></i>Verify & Sign In';
+                // Clear OTP boxes
+                boxes.forEach(b => { b.value = ''; });
+                boxes[0].focus();
+            }
+        } catch (error) {
+            showAlert('<i class="fa-solid fa-circle-exclamation me-2"></i>Verification failed. Please try again.', 'danger');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-check-double me-2"></i>Verify & Sign In';
+        }
+    });
+
+    // Change Number (back to step 1)
+    document.getElementById('changeNumberLink').addEventListener('click', () => {
+        clearInterval(otpTimerInterval);
+        document.getElementById('otp-step-2').classList.remove('active');
+        document.getElementById('otp-step-1').classList.add('active');
+        document.querySelectorAll('.otp-box').forEach(b => { b.value = ''; });
+        hideAlert();
+    });
+
+    // OTP Countdown Timer
+    function startOtpTimer(seconds) {
+        clearInterval(otpTimerInterval);
+        let remaining = seconds;
+        const display = document.getElementById('otpCountdown');
+
+        otpTimerInterval = setInterval(() => {
+            const min = Math.floor(remaining / 60);
+            const sec = remaining % 60;
+            display.textContent = min + ':' + (sec < 10 ? '0' : '') + sec;
+            remaining--;
+
+            if (remaining < 0) {
+                clearInterval(otpTimerInterval);
+                display.textContent = 'Expired';
+                display.style.color = '#f43f5e';
+            }
+        }, 1000);
+    }
 </script>
 </body>
 </html>
